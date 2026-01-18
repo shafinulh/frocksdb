@@ -446,6 +446,7 @@ endif
 ifndef DISABLE_WARNING_AS_ERROR
 	WARNING_FLAGS += -Werror
 endif
+WARNING_FLAGS += -Wno-error=redundant-move
 
 
 ifdef LUA_PATH

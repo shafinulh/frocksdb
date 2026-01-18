@@ -66,12 +66,6 @@ struct BlockAccessInfo {
 
   void AddAccess(const BlockCacheTraceRecord& access,
                  uint64_t access_sequnce_number) {
-    if (block_size != 0 && access.block_size != 0) {
-      assert(block_size == access.block_size);
-    }
-    if (num_keys != 0 && access.num_keys_in_block != 0) {
-      assert(num_keys == access.num_keys_in_block);
-    }
     if (first_access_time == 0) {
       first_access_time = access.access_timestamp;
     }
@@ -387,6 +381,8 @@ class BlockCacheTraceAnalyzer {
   MissRatioStats miss_ratio_stats_;
   uint64_t unique_block_id_ = 1;
   uint64_t unique_get_key_id_ = 1;
+  uint64_t block_size_mismatch_count_ = 0;
+  uint64_t num_keys_mismatch_count_ = 0;
   BlockCacheHumanReadableTraceWriter human_readable_trace_writer_;
 };
 

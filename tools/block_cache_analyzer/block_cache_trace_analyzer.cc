@@ -1483,10 +1483,29 @@ Status BlockCacheTraceAnalyzer::RecordAccess(
   }
   BlockAccessInfo& block_access_info =
       block_type_aggr.block_access_info_map[access.block_key];
+  const bool block_size_mismatch =
+      block_access_info.block_size != 0 && access.block_size != 0 &&
+      block_access_info.block_size != access.block_size;
+  const bool num_keys_mismatch =
+      block_access_info.num_keys != 0 && access.num_keys_in_block != 0 &&
+      block_access_info.num_keys != access.num_keys_in_block;
+  if (block_size_mismatch) {
+    ++block_size_mismatch_count_;
+  }
+  if (num_keys_mismatch) {
+    ++num_keys_mismatch_count_;
+  }
+  BlockCacheTraceRecord adjusted_access = access;
+  if (block_size_mismatch) {
+    adjusted_access.block_size = block_access_info.block_size;
+  }
+  if (num_keys_mismatch) {
+    adjusted_access.num_keys_in_block = block_access_info.num_keys;
+  }
   if (compute_reuse_distance_) {
     ComputeReuseDistance(&block_access_info);
   }
-  block_access_info.AddAccess(access, access_sequence_number_);
+  block_access_info.AddAccess(adjusted_access, access_sequence_number_);
   block_info_map_[access.block_key] = &block_access_info;
   uint64_t get_key_id = 0;
   if (access.caller == TableReaderCaller::kUserGet &&
@@ -1497,7 +1516,8 @@ Status BlockCacheTraceAnalyzer::RecordAccess(
       unique_get_key_id_++;
     }
     get_key_id = get_key_info_map_[user_key].key_id;
-    get_key_info_map_[user_key].AddAccess(access, access_sequence_number_);
+    get_key_info_map_[user_key].AddAccess(adjusted_access,
+                                          access_sequence_number_);
   }
 
   if (compute_reuse_distance_) {
@@ -1516,7 +1536,7 @@ Status BlockCacheTraceAnalyzer::RecordAccess(
     }
   }
   return human_readable_trace_writer_.WriteHumanReadableTraceRecord(
-      access, block_access_info.block_id, get_key_id);
+      adjusted_access, block_access_info.block_id, get_key_id);
 }
 
 Status BlockCacheTraceAnalyzer::Analyze() {
@@ -1905,6 +1925,13 @@ void BlockCacheTraceAnalyzer::PrintStatsSummary() const {
       caller_bt_num_access_map;
   std::map<TableReaderCaller, std::map<uint32_t, uint64_t>>
       caller_level_num_access_map;
+  if (block_size_mismatch_count_ > 0 || num_keys_mismatch_count_ > 0) {
+    fprintf(stdout,
+            "Warning: normalized %lu block size mismatches and %lu num-keys "
+            "mismatches while analyzing the trace.\n",
+            block_size_mismatch_count_, num_keys_mismatch_count_);
+    print_break_lines(/*num_break_lines=*/1);
+  }
   for (auto const& cf_aggregates : cf_aggregates_map_) {
     // Stats per column family.
     const std::string& cf_name = cf_aggregates.first;
