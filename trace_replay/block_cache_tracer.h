@@ -7,11 +7,14 @@
 
 #include <atomic>
 #include <fstream>
+#include <memory>
+#include <string>
 
 #include "monitoring/instrumented_mutex.h"
 #include "rocksdb/options.h"
 #include "rocksdb/trace_reader_writer.h"
 #include "table/table_reader_caller.h"
+#include "trace_replay/shards_mrc.h"
 #include "trace_replay/trace_replay.h"
 
 namespace ROCKSDB_NAMESPACE {
@@ -284,12 +287,37 @@ class BlockCacheTracer {
   // GetId cycles from 1 to port::kMaxUint64.
   uint64_t NextGetId();
 
+  // Start online SHARDS MRC generation. Independent of the trace file writer.
+  // sampling_ratio:  fraction of blocks to track (e.g. 0.01 = 1%)
+  // output_path:     where to write the final MRC binary on EndShards()
+  // dump_interval:   write a snapshot every N processed entries (0 = disabled)
+  // num_bins:        histogram bins
+  // bin_size:        stack distance units per bin (in blocks)
+  Status StartShards(double sampling_ratio, const std::string& output_path,
+                     uint64_t dump_interval = 0, uint64_t num_bins = 10000,
+                     uint64_t bin_size = 10);
+
+  // Stop SHARDS and flush the final MRC to output_path.
+  void EndShards();
+
+  bool is_shards_enabled() const {
+    return shards_enabled_.load(std::memory_order_relaxed);
+  }
+
  private:
   TraceOptions trace_options_;
   // A mutex protects the writer_.
   InstrumentedMutex trace_writer_mutex_;
   std::atomic<BlockCacheTraceWriter*> writer_;
   std::atomic<uint64_t> get_id_counter_;
+
+  // SHARDS state — protected by shards_mutex_, independent of trace writer.
+  std::atomic<bool> shards_enabled_{false};
+  InstrumentedMutex shards_mutex_;
+  std::unique_ptr<ShardsMRC> shards_;
+  std::string shards_output_path_;
+  uint64_t shards_dump_interval_{0};
+  uint64_t shards_snapshot_count_{0};
 };
 
 }  // namespace ROCKSDB_NAMESPACE

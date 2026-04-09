@@ -470,6 +470,23 @@ Status BlockCacheTracer::WriteBlockAccess(const BlockCacheTraceRecord& record,
                                           const Slice& block_key,
                                           const Slice& cf_name,
                                           const Slice& referenced_key) {
+  // Online SHARDS — runs independently of the trace file writer.
+  if (shards_enabled_.load(std::memory_order_relaxed)) {
+    InstrumentedMutexLock shards_lock(&shards_mutex_);
+    if (shards_) {
+      shards_->ProcessAccess(block_key);
+      // Periodic snapshot dump if requested.
+      if (shards_dump_interval_ > 0 &&
+          shards_->num_entries_processed() > 0 &&
+          shards_->num_entries_processed() % shards_dump_interval_ == 0) {
+        std::string snap_path = shards_output_path_ + "." +
+                                std::to_string(++shards_snapshot_count_);
+        shards_->DumpMRC(snap_path);
+      }
+    }
+  }
+
+  // Existing trace file writer — unchanged.
   if (!writer_.load() || !ShouldTrace(block_key, trace_options_)) {
     return Status::OK();
   }
@@ -479,6 +496,34 @@ Status BlockCacheTracer::WriteBlockAccess(const BlockCacheTraceRecord& record,
   }
   return writer_.load()->WriteBlockAccess(record, block_key, cf_name,
                                           referenced_key);
+}
+
+Status BlockCacheTracer::StartShards(double sampling_ratio,
+                                     const std::string& output_path,
+                                     uint64_t dump_interval,
+                                     uint64_t num_bins, uint64_t bin_size) {
+  InstrumentedMutexLock lock(&shards_mutex_);
+  if (shards_enabled_.load(std::memory_order_relaxed)) {
+    return Status::Busy();
+  }
+  shards_ = std::make_unique<ShardsMRC>(sampling_ratio, num_bins, bin_size);
+  shards_output_path_ = output_path;
+  shards_dump_interval_ = dump_interval;
+  shards_snapshot_count_ = 0;
+  shards_enabled_.store(true, std::memory_order_release);
+  return Status::OK();
+}
+
+void BlockCacheTracer::EndShards() {
+  InstrumentedMutexLock lock(&shards_mutex_);
+  if (!shards_enabled_.load(std::memory_order_relaxed)) {
+    return;
+  }
+  shards_enabled_.store(false, std::memory_order_release);
+  if (shards_ && !shards_output_path_.empty()) {
+    shards_->DumpMRC(shards_output_path_);
+  }
+  shards_.reset();
 }
 
 uint64_t BlockCacheTracer::NextGetId() {

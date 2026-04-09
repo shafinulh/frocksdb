@@ -1,0 +1,116 @@
+$DEBUG_LEVEL is 0
+make: Warning: File 'make_config.mk' has modification time 6.1 s in the future
+  CC       db/arena_wrapped_db_iter.o
+  CC       db/blob/blob_file_builder.o
+  CC       db/blob/blob_file_cache.o
+  CC       db/blob/blob_file_reader.o
+  CC       db/blob/blob_log_sequential_reader.o
+  CC       db/blob/blob_log_writer.o
+  CC       db/builder.o
+  CC       db/c.o
+  CC       db/column_family.o
+  CC       db/compaction/compaction.o
+  CC       db/compaction/compaction_iterator.o
+  CC       db/compaction/compaction_job.o
+  CC       db/compaction/compaction_picker.o
+  CC       db/compaction/compaction_picker_fifo.o
+  CC       db/compaction/compaction_picker_level.o
+  CC       db/compaction/compaction_picker_universal.o
+  CC       db/convenience.o
+  CC       db/db_filesnapshot.o
+  CC       db/db_impl/compacted_db_impl.o
+  CC       db/db_impl/db_impl.o
+  CC       db/db_impl/db_impl_compaction_flush.o
+  CC       db/db_impl/db_impl_experimental.o
+  CC       db/db_impl/db_impl_files.o
+  CC       db/db_impl/db_impl_open.o
+  CC       db/db_impl/db_impl_readonly.o
+  CC       db/db_impl/db_impl_secondary.o
+  CC       db/db_impl/db_impl_write.o
+  CC       db/db_info_dumper.o
+  CC       db/db_iter.o
+  CC       db/dbformat.o
+  CC       db/error_handler.o
+  CC       db/event_helpers.o
+  CC       db/experimental.o
+  CC       db/external_sst_file_ingestion_job.o
+  CC       db/file_indexer.o
+  CC       db/flush_job.o
+  CC       db/flush_scheduler.o
+  CC       db/forward_iterator.o
+  CC       db/import_column_family_job.o
+  CC       db/internal_stats.o
+  CC       db/logs_with_prep_tracker.o
+  CC       db/log_reader.o
+  CC       db/log_writer.o
+  CC       db/malloc_stats.o
+  CC       db/memtable.o
+  CC       db/memtable_list.o
+  CC       db/merge_helper.o
+  CC       db/merge_operator.o
+  CC       db/output_validator.o
+  CC       db/periodic_work_scheduler.o
+  CC       db/range_del_aggregator.o
+  CC       db/range_tombstone_fragmenter.o
+  CC       db/repair.o
+In file included from ./db/range_del_aggregator.h:16,
+                 from db/range_del_aggregator.cc:6:
+./db/compaction/compaction_iteration_stats.h:23:3: error: ‘uint64_t’ does not name a type
+   23 |   uint64_t total_filter_time = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:9:1: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+    8 | #include "rocksdb/rocksdb_namespace.h"
+  +++ |+#include <cstdint>
+    9 | 
+./db/compaction/compaction_iteration_stats.h:28:3: error: ‘uint64_t’ does not name a type
+   28 |   uint64_t num_input_records = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:28:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+./db/compaction/compaction_iteration_stats.h:29:3: error: ‘uint64_t’ does not name a type
+   29 |   uint64_t num_input_deletion_records = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:29:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+./db/compaction/compaction_iteration_stats.h:30:3: error: ‘uint64_t’ does not name a type
+   30 |   uint64_t num_input_corrupt_records = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:30:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+./db/compaction/compaction_iteration_stats.h:31:3: error: ‘uint64_t’ does not name a type
+   31 |   uint64_t total_input_raw_key_bytes = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:31:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+./db/compaction/compaction_iteration_stats.h:32:3: error: ‘uint64_t’ does not name a type
+   32 |   uint64_t total_input_raw_value_bytes = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:32:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+./db/compaction/compaction_iteration_stats.h:35:3: error: ‘uint64_t’ does not name a type
+   35 |   uint64_t num_single_del_fallthru = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:35:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+./db/compaction/compaction_iteration_stats.h:36:3: error: ‘uint64_t’ does not name a type
+   36 |   uint64_t num_single_del_mismatch = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:36:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+./db/compaction/compaction_iteration_stats.h:39:3: error: ‘uint64_t’ does not name a type
+   39 |   uint64_t num_blobs_read = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:39:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+./db/compaction/compaction_iteration_stats.h:40:3: error: ‘uint64_t’ does not name a type
+   40 |   uint64_t total_blob_bytes_read = 0;
+      |   ^~~~~~~~
+./db/compaction/compaction_iteration_stats.h:40:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
+  CC       db/snapshot_impl.o
+  CC       db/table_cache.o
+  CC       db/table_properties_collector.o
+  CC       db/transaction_log_impl.o
+  CC       db/trim_history_scheduler.o
+  CC       db/version_builder.o
+  CC       db/version_edit.o
+  CC       db/version_edit_handler.o
+  CC       db/version_set.o
+  CC       db/wal_edit.o
+  CC       db/wal_manager.o
+  CC       db/write_batch.o
+  CC       db/write_batch_base.o
+  CC       db/write_controller.o
+make: *** [Makefile:2375: db/range_del_aggregator.o] Error 1
+make: *** Waiting for unfinished jobs....
