@@ -2170,19 +2170,19 @@ int block_cache_trace_analyzer_tool(int argc, char** argv) {
   }
   fprintf(stdout, "Status: %s\n", s.ToString().c_str());
   analyzer.WriteMissRatioCurves();
+  if (FLAGS_mrc_only) {
+    // Timeline methods access per-access state that is not maintained in
+    // mrc_only mode, so skip them to avoid a crash.
+    fprintf(stdout,
+            "Skipping timeline analysis since --mrc_only=true.\n");
+    return 0;
+  }
   analyzer.WriteMissRatioTimeline(1);
   analyzer.WriteMissRatioTimeline(kSecondInMinute);
   analyzer.WriteMissRatioTimeline(kSecondInHour);
   analyzer.WriteMissTimeline(1);
   analyzer.WriteMissTimeline(kSecondInMinute);
   analyzer.WriteMissTimeline(kSecondInHour);
-
-  if (FLAGS_mrc_only) {
-    fprintf(stdout,
-            "Skipping the analysis statistics since the user wants to compute "
-            "MRC only");
-    return 0;
-  }
 
   analyzer.PrintStatsSummary();
   if (FLAGS_print_access_count_stats) {

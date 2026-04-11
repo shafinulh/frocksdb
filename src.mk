@@ -197,6 +197,7 @@ LIB_SOURCES =                                                   \
   tools/dump/db_dump_tool.cc                                    \
   trace_replay/trace_replay.cc                                  \
   trace_replay/block_cache_tracer.cc                            \
+  trace_replay/shards_mrc.cc                                    \
   trace_replay/io_tracer.cc                                     \
   util/build_version.cc                                         \
   util/coding.cc                                                \

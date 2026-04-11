@@ -231,9 +231,9 @@ class BlockCacheTraceReader {
   BlockCacheTraceReader(BlockCacheTraceReader&&) = delete;
   BlockCacheTraceReader& operator=(BlockCacheTraceReader&&) = delete;
 
-  Status ReadHeader(BlockCacheTraceHeader* header);
+  virtual Status ReadHeader(BlockCacheTraceHeader* header);
 
-  Status ReadAccess(BlockCacheTraceRecord* record);
+  virtual Status ReadAccess(BlockCacheTraceRecord* record);
 
  private:
   std::unique_ptr<TraceReader> trace_reader_;
