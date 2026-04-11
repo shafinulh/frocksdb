@@ -491,16 +491,20 @@ Status BlockCacheTracer::WriteBlockAccess(const BlockCacheTraceRecord& record,
                                           const Slice& referenced_key) {
   // Online SHARDS — runs independently of the trace file writer.
   if (shards_enabled_.load(std::memory_order_relaxed)) {
-    InstrumentedMutexLock shards_lock(&shards_mutex_);
-    if (shards_) {
-      shards_->ProcessAccess(block_key);
-      // Periodic snapshot dump if requested.
-      if (shards_dump_interval_ > 0 &&
-          shards_->num_entries_processed() > 0 &&
-          shards_->num_entries_processed() % shards_dump_interval_ == 0) {
-        std::string snap_path = shards_output_path_ + "." +
-                                std::to_string(++shards_snapshot_count_);
-        shards_->DumpMRC(snap_path);
+    if (record.caller == TableReaderCaller::kUserGet ||
+        record.caller == TableReaderCaller::kUserMultiGet ||
+        record.caller == TableReaderCaller::kUserIterator) {
+      InstrumentedMutexLock shards_lock(&shards_mutex_);
+      if (shards_) {
+        shards_->ProcessAccess(block_key);
+        // Periodic snapshot dump if requested.
+        if (shards_dump_interval_ > 0 &&
+            shards_->num_entries_processed() > 0 &&
+            shards_->num_entries_processed() % shards_dump_interval_ == 0) {
+          std::string snap_path = shards_output_path_ + "." +
+                                  std::to_string(++shards_snapshot_count_);
+          shards_->DumpMRC(snap_path);
+        }
       }
     }
   }
