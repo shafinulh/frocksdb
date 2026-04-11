@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #ifndef ROCKSDB_NAMESPACE
 #define ROCKSDB_NAMESPACE rocksdb
 #endif

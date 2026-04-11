@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include "trace_replay/shards_mrc.h"
 #include "db/db_impl/db_impl.h"
 #include "db/dbformat.h"
 #include "rocksdb/slice.h"
@@ -439,9 +440,27 @@ Status BlockCacheHumanReadableTraceReader::ReadAccess(
   return Status::OK();
 }
 
-BlockCacheTracer::BlockCacheTracer() { writer_.store(nullptr); }
+BlockCacheTracer::BlockCacheTracer() {
+  writer_.store(nullptr);
+  // Auto-start SHARDS if ROCKSDB_SHARDS_OUTPUT is set in the environment.
+  const char* output_path = std::getenv("ROCKSDB_SHARDS_OUTPUT");
+  if (output_path && output_path[0] != '\0') {
+    double ratio = 0.01;
+    uint64_t interval = 50000;
+    uint64_t num_bins = 10000;
+    uint64_t bin_size = 10;
+    const char* env_ratio = std::getenv("ROCKSDB_SHARDS_RATIO");
+    if (env_ratio) ratio = std::atof(env_ratio);
+    const char* env_interval = std::getenv("ROCKSDB_SHARDS_INTERVAL");
+    if (env_interval) interval = static_cast<uint64_t>(std::atoll(env_interval));
+    StartShards(ratio, std::string(output_path), interval, num_bins, bin_size);
+  }
+}
 
-BlockCacheTracer::~BlockCacheTracer() { EndTrace(); }
+BlockCacheTracer::~BlockCacheTracer() {
+  EndShards();
+  EndTrace();
+}
 
 Status BlockCacheTracer::StartTrace(
     SystemClock* clock, const TraceOptions& trace_options,
@@ -506,7 +525,7 @@ Status BlockCacheTracer::StartShards(double sampling_ratio,
   if (shards_enabled_.load(std::memory_order_relaxed)) {
     return Status::Busy();
   }
-  shards_ = std::make_unique<ShardsMRC>(sampling_ratio, num_bins, bin_size);
+  shards_.reset(new ShardsMRC(sampling_ratio, num_bins, bin_size));
   shards_output_path_ = output_path;
   shards_dump_interval_ = dump_interval;
   shards_snapshot_count_ = 0;

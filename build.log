@@ -1,9 +1,19 @@
 $DEBUG_LEVEL is 0
-make: Warning: File 'make_config.mk' has modification time 6.1 s in the future
+make: Warning: File 'make_config.mk' has modification time 6.5 s in the future
+$DEBUG_LEVEL is 0
+make: Warning: File 'db/write_batch.cc.d' has modification time 0.024 s in the future
+  CC       cache/cache.o
+  CC       cache/clock_cache.o
+  CC       cache/lru_cache.o
+  CC       cache/sharded_cache.o
   CC       db/arena_wrapped_db_iter.o
+  CC       db/blob/blob_file_addition.o
   CC       db/blob/blob_file_builder.o
   CC       db/blob/blob_file_cache.o
+  CC       db/blob/blob_file_garbage.o
+  CC       db/blob/blob_file_meta.o
   CC       db/blob/blob_file_reader.o
+  CC       db/blob/blob_log_format.o
   CC       db/blob/blob_log_sequential_reader.o
   CC       db/blob/blob_log_writer.o
   CC       db/builder.o
@@ -16,13 +26,14 @@ make: Warning: File 'make_config.mk' has modification time 6.1 s in the future
   CC       db/compaction/compaction_picker_fifo.o
   CC       db/compaction/compaction_picker_level.o
   CC       db/compaction/compaction_picker_universal.o
+  CC       db/compaction/sst_partitioner.o
   CC       db/convenience.o
   CC       db/db_filesnapshot.o
   CC       db/db_impl/compacted_db_impl.o
   CC       db/db_impl/db_impl.o
   CC       db/db_impl/db_impl_compaction_flush.o
-  CC       db/db_impl/db_impl_experimental.o
   CC       db/db_impl/db_impl_files.o
+  CC       db/db_impl/db_impl_experimental.o
   CC       db/db_impl/db_impl_open.o
   CC       db/db_impl/db_impl_readonly.o
   CC       db/db_impl/db_impl_secondary.o
@@ -53,51 +64,6 @@ make: Warning: File 'make_config.mk' has modification time 6.1 s in the future
   CC       db/range_del_aggregator.o
   CC       db/range_tombstone_fragmenter.o
   CC       db/repair.o
-In file included from ./db/range_del_aggregator.h:16,
-                 from db/range_del_aggregator.cc:6:
-./db/compaction/compaction_iteration_stats.h:23:3: error: ‘uint64_t’ does not name a type
-   23 |   uint64_t total_filter_time = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:9:1: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
-    8 | #include "rocksdb/rocksdb_namespace.h"
-  +++ |+#include <cstdint>
-    9 | 
-./db/compaction/compaction_iteration_stats.h:28:3: error: ‘uint64_t’ does not name a type
-   28 |   uint64_t num_input_records = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:28:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
-./db/compaction/compaction_iteration_stats.h:29:3: error: ‘uint64_t’ does not name a type
-   29 |   uint64_t num_input_deletion_records = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:29:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
-./db/compaction/compaction_iteration_stats.h:30:3: error: ‘uint64_t’ does not name a type
-   30 |   uint64_t num_input_corrupt_records = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:30:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
-./db/compaction/compaction_iteration_stats.h:31:3: error: ‘uint64_t’ does not name a type
-   31 |   uint64_t total_input_raw_key_bytes = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:31:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
-./db/compaction/compaction_iteration_stats.h:32:3: error: ‘uint64_t’ does not name a type
-   32 |   uint64_t total_input_raw_value_bytes = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:32:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
-./db/compaction/compaction_iteration_stats.h:35:3: error: ‘uint64_t’ does not name a type
-   35 |   uint64_t num_single_del_fallthru = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:35:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
-./db/compaction/compaction_iteration_stats.h:36:3: error: ‘uint64_t’ does not name a type
-   36 |   uint64_t num_single_del_mismatch = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:36:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
-./db/compaction/compaction_iteration_stats.h:39:3: error: ‘uint64_t’ does not name a type
-   39 |   uint64_t num_blobs_read = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:39:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
-./db/compaction/compaction_iteration_stats.h:40:3: error: ‘uint64_t’ does not name a type
-   40 |   uint64_t total_blob_bytes_read = 0;
-      |   ^~~~~~~~
-./db/compaction/compaction_iteration_stats.h:40:3: note: ‘uint64_t’ is defined in header ‘<cstdint>’; did you forget to ‘#include <cstdint>’?
   CC       db/snapshot_impl.o
   CC       db/table_cache.o
   CC       db/table_properties_collector.o
@@ -112,5 +78,221 @@ In file included from ./db/range_del_aggregator.h:16,
   CC       db/write_batch.o
   CC       db/write_batch_base.o
   CC       db/write_controller.o
-make: *** [Makefile:2375: db/range_del_aggregator.o] Error 1
-make: *** Waiting for unfinished jobs....
+  CC       db/write_thread.o
+  CC       env/composite_env.o
+  CC       env/env.o
+  CC       env/env_chroot.o
+  CC       env/env_encryption.o
+  CC       env/env_hdfs.o
+  CC       env/env_posix.o
+  CC       env/file_system.o
+  CC       env/fs_posix.o
+  CC       env/fs_remap.o
+  CC       env/file_system_tracer.o
+  CC       env/io_posix.o
+  CC       env/mock_env.o
+  CC       file/delete_scheduler.o
+  CC       file/file_prefetch_buffer.o
+  CC       file/file_util.o
+  CC       file/filename.o
+  CC       file/line_file_reader.o
+  CC       file/random_access_file_reader.o
+  CC       file/read_write_util.o
+  CC       file/readahead_raf.o
+  CC       file/sequence_file_reader.o
+  CC       file/sst_file_manager_impl.o
+  CC       file/writable_file_writer.o
+  CC       logging/auto_roll_logger.o
+  CC       logging/event_logger.o
+  CC       logging/log_buffer.o
+  CC       memory/arena.o
+  CC       memory/concurrent_arena.o
+  CC       memory/jemalloc_nodump_allocator.o
+  CC       memtable/alloc_tracker.o
+  CC       memtable/hash_linklist_rep.o
+  CC       memtable/hash_skiplist_rep.o
+  CC       memtable/skiplistrep.o
+  CC       memtable/vectorrep.o
+  CC       memtable/write_buffer_manager.o
+  CC       monitoring/histogram.o
+  CC       monitoring/histogram_windowing.o
+  CC       monitoring/in_memory_stats_history.o
+  CC       monitoring/instrumented_mutex.o
+  CC       monitoring/iostats_context.o
+  CC       monitoring/perf_context.o
+  CC       monitoring/perf_level.o
+  CC       monitoring/persistent_stats_history.o
+  CC       monitoring/statistics.o
+  CC       monitoring/thread_status_impl.o
+  CC       monitoring/thread_status_updater.o
+  CC       monitoring/thread_status_updater_debug.o
+  CC       monitoring/thread_status_util.o
+  CC       monitoring/thread_status_util_debug.o
+  CC       options/cf_options.o
+  CC       options/configurable.o
+  CC       options/customizable.o
+  CC       options/db_options.o
+  CC       options/options.o
+  CC       options/options_helper.o
+  CC       options/options_parser.o
+  CC       port/port_posix.o
+  CC       port/stack_trace.o
+  CC       table/adaptive/adaptive_table_factory.o
+  CC       table/block_based/binary_search_index_reader.o
+  CC       table/block_based/block.o
+  CC       table/block_based/block_based_filter_block.o
+  CC       table/block_based/block_based_table_builder.o
+  CC       table/block_based/block_based_table_factory.o
+  CC       table/block_based/block_based_table_iterator.o
+  CC       table/block_based/block_based_table_reader.o
+  CC       table/block_based/block_builder.o
+  CC       table/block_based/block_prefetcher.o
+  CC       table/block_based/block_prefix_index.o
+  CC       table/block_based/data_block_hash_index.o
+  CC       table/block_based/data_block_footer.o
+  CC       table/block_based/filter_block_reader_common.o
+  CC       table/block_based/filter_policy.o
+  CC       table/block_based/flush_block_policy.o
+  CC       table/block_based/full_filter_block.o
+  CC       table/block_based/hash_index_reader.o
+  CC       table/block_based/index_builder.o
+  CC       table/block_based/index_reader_common.o
+  CC       table/block_based/parsed_full_filter_block.o
+  CC       table/block_based/partitioned_filter_block.o
+  CC       table/block_based/partitioned_index_iterator.o
+  CC       table/block_based/partitioned_index_reader.o
+  CC       table/block_based/reader_common.o
+  CC       table/block_based/uncompression_dict_reader.o
+  CC       table/block_fetcher.o
+  CC       table/cuckoo/cuckoo_table_builder.o
+  CC       table/cuckoo/cuckoo_table_factory.o
+  CC       table/cuckoo/cuckoo_table_reader.o
+  CC       table/format.o
+  CC       table/get_context.o
+  CC       table/iterator.o
+  CC       table/merging_iterator.o
+  CC       table/meta_blocks.o
+  CC       table/persistent_cache_helper.o
+  CC       table/plain/plain_table_bloom.o
+  CC       table/plain/plain_table_builder.o
+  CC       table/plain/plain_table_factory.o
+  CC       table/plain/plain_table_index.o
+  CC       table/plain/plain_table_key_coding.o
+  CC       table/plain/plain_table_reader.o
+  CC       table/sst_file_dumper.o
+  CC       table/sst_file_reader.o
+  CC       table/sst_file_writer.o
+  CC       table/table_factory.o
+  CC       table/table_properties.o
+  CC       table/two_level_iterator.o
+  CC       test_util/sync_point.o
+  CC       test_util/sync_point_impl.o
+  CC       test_util/transaction_test_util.o
+  CC       tools/dump/db_dump_tool.o
+  CC       trace_replay/trace_replay.o
+table/plain/plain_table_builder.cc: In member function ‘virtual rocksdb::Status rocksdb::PlainTableBuilder::Finish()’:
+table/plain/plain_table_builder.cc:275:21: warning: redundant move in return statement [-Wredundant-move]
+  275 |     return std::move(s);
+      |            ~~~~~~~~~^~~
+table/plain/plain_table_builder.cc:275:21: note: remove ‘std::move’ call
+  CC       trace_replay/block_cache_tracer.o
+  CC       trace_replay/io_tracer.o
+  CC       util/coding.o
+  CC       util/compaction_job_stats_impl.o
+  CC       util/comparator.o
+  CC       util/compression_context_cache.o
+  CC       util/concurrent_task_limiter_impl.o
+  CC       util/crc32c.o
+  CC       util/dynamic_bloom.o
+  CC       util/hash.o
+  CC       util/murmurhash.o
+  CC       util/random.o
+  CC       util/rate_limiter.o
+  CC       util/ribbon_config.o
+  CC       util/slice.o
+  CC       util/file_checksum_helper.o
+  CC       util/status.o
+  CC       util/string_util.o
+  CC       util/thread_local.o
+  CC       util/threadpool_imp.o
+  CC       utilities/backupable/backupable_db.o
+  CC       utilities/blob_db/blob_compaction_filter.o
+  CC       utilities/blob_db/blob_db.o
+  CC       utilities/blob_db/blob_db_impl.o
+  CC       utilities/blob_db/blob_db_impl_filesnapshot.o
+  CC       utilities/blob_db/blob_file.o
+  CC       utilities/cassandra/cassandra_compaction_filter.o
+  CC       utilities/cassandra/format.o
+  CC       utilities/cassandra/merge_operator.o
+  CC       utilities/checkpoint/checkpoint_impl.o
+  CC       utilities/compaction_filters/remove_emptyvalue_compactionfilter.o
+  CC       utilities/convenience/info_log_finder.o
+  CC       utilities/debug.o
+  CC       utilities/env_mirror.o
+  CC       utilities/env_timed.o
+  CC       utilities/fault_injection_env.o
+  CC       utilities/fault_injection_fs.o
+  CC       utilities/flink/flink_compaction_filter.o
+  CC       utilities/leveldb_options/leveldb_options.o
+  CC       utilities/memory/memory_util.o
+  CC       utilities/merge_operators/max.o
+  CC       utilities/merge_operators/put.o
+  CC       utilities/merge_operators/sortlist.o
+  CC       utilities/merge_operators/string_append/stringappend.o
+  CC       utilities/merge_operators/string_append/stringappend2.o
+  CC       utilities/merge_operators/uint64add.o
+  CC       utilities/merge_operators/bytesxor.o
+  CC       utilities/object_registry.o
+  CC       utilities/option_change_migration/option_change_migration.o
+  CC       utilities/options/options_util.o
+  CC       utilities/persistent_cache/block_cache_tier.o
+  CC       utilities/persistent_cache/block_cache_tier_file.o
+  CC       utilities/persistent_cache/block_cache_tier_metadata.o
+  CC       utilities/persistent_cache/persistent_cache_tier.o
+  CC       utilities/persistent_cache/volatile_tier_impl.o
+  CC       utilities/simulator_cache/cache_simulator.o
+  CC       utilities/simulator_cache/sim_cache.o
+  CC       utilities/table_properties_collectors/compact_on_deletion_collector.o
+  CC       utilities/trace/file_trace_reader_writer.o
+  CC       utilities/transactions/lock/lock_manager.o
+  CC       utilities/transactions/lock/point/point_lock_tracker.o
+  CC       utilities/transactions/lock/point/point_lock_manager.o
+  CC       utilities/transactions/optimistic_transaction.o
+  CC       utilities/transactions/optimistic_transaction_db_impl.o
+  CC       utilities/transactions/pessimistic_transaction.o
+  CC       utilities/transactions/pessimistic_transaction_db.o
+  CC       utilities/transactions/snapshot_checker.o
+  CC       utilities/transactions/transaction_base.o
+  CC       utilities/transactions/transaction_db_mutex_impl.o
+  CC       utilities/transactions/transaction_util.o
+  CC       utilities/transactions/write_prepared_txn.o
+  CC       utilities/transactions/write_prepared_txn_db.o
+  CC       utilities/transactions/write_unprepared_txn.o
+  CC       utilities/transactions/write_unprepared_txn_db.o
+  CC       utilities/ttl/db_ttl_impl.o
+  CC       utilities/write_batch_with_index/write_batch_with_index.o
+  CC       utilities/write_batch_with_index/write_batch_with_index_internal.o
+  CC       third-party/folly/folly/detail/Futex.o
+  CC       third-party/folly/folly/synchronization/AtomicNotification.o
+  CC       third-party/folly/folly/synchronization/DistributedMutex.o
+  CC       third-party/folly/folly/synchronization/ParkingLot.o
+  CC       third-party/folly/folly/synchronization/WaitOptions.o
+  CC       utilities/transactions/lock/range/range_tree/lib/locktree/concurrent_tree.o
+  CC       utilities/transactions/lock/range/range_tree/lib/locktree/keyrange.o
+  CC       utilities/transactions/lock/range/range_tree/lib/locktree/lock_request.o
+  CC       utilities/transactions/lock/range/range_tree/lib/locktree/locktree.o
+  CC       utilities/transactions/lock/range/range_tree/lib/locktree/manager.o
+  CC       utilities/transactions/lock/range/range_tree/lib/locktree/range_buffer.o
+  CC       utilities/transactions/lock/range/range_tree/lib/locktree/treenode.o
+  CC       utilities/transactions/lock/range/range_tree/lib/locktree/txnid_set.o
+  CC       utilities/transactions/lock/range/range_tree/lib/locktree/wfg.o
+  CC       utilities/transactions/lock/range/range_tree/lib/standalone_port.o
+  CC       utilities/transactions/lock/range/range_tree/lib/util/dbt.o
+  CC       utilities/transactions/lock/range/range_tree/lib/util/memarena.o
+  CC       utilities/transactions/lock/range/range_tree/range_tree_lock_manager.o
+  CC       utilities/transactions/lock/range/range_tree/range_tree_lock_tracker.o
+  GEN      util/build_version.cc
+  CC       util/build_version.o
+  AR       librocksdb.a
+/usr/bin/ar: creating librocksdb.a
+make: warning:  Clock skew detected.  Your build may be incomplete.
