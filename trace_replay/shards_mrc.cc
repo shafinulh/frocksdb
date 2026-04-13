@@ -12,10 +12,13 @@ namespace ROCKSDB_NAMESPACE {
 ShardsMRC::ShardsMRC(double sampling_ratio, uint64_t num_bins,
                      uint64_t bin_size)
     : sampling_ratio_(sampling_ratio),
-      threshold_(static_cast<uint64_t>(sampling_ratio *
-                                       static_cast<double>(
-                                           std::numeric_limits<uint64_t>::max()))),
-      scale_(1.0 / sampling_ratio),
+      threshold_(sampling_ratio >= 1.0
+                     ? std::numeric_limits<uint64_t>::max()
+                     : static_cast<uint64_t>(
+                           sampling_ratio *
+                           static_cast<double>(
+                               std::numeric_limits<uint64_t>::max()))),
+      scale_(sampling_ratio >= 1.0 ? 1.0 : 1.0 / sampling_ratio),
       num_bins_(num_bins),
       bin_size_(bin_size),
       histogram_(num_bins + 1, 0.0) {}
