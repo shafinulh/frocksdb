@@ -503,8 +503,8 @@ Status BlockCacheTracer::WriteBlockAccess(const BlockCacheTraceRecord& record,
         shards_->ProcessAccess(block_key);
         // Periodic snapshot dump if requested.
         if (shards_dump_interval_ > 0 &&
-            shards_->num_entries_processed() > 0 &&
-            shards_->num_entries_processed() % shards_dump_interval_ == 0) {
+            shards_->num_entries_seen() > 0 &&
+            shards_->num_entries_seen() % shards_dump_interval_ == 0) {
           std::string snap_path = shards_output_path_ + "." +
                                   std::to_string(++shards_snapshot_count_);
           shards_->DumpMRC(snap_path);
