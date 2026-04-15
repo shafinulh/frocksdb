@@ -453,6 +453,10 @@ BlockCacheTracer::BlockCacheTracer() {
     if (env_ratio) ratio = std::atof(env_ratio);
     const char* env_interval = std::getenv("ROCKSDB_SHARDS_INTERVAL");
     if (env_interval) interval = static_cast<uint64_t>(std::atoll(env_interval));
+    const char* env_num_bins = std::getenv("ROCKSDB_SHARDS_NUM_BINS");
+    if (env_num_bins) num_bins = static_cast<uint64_t>(std::atoll(env_num_bins));
+    const char* env_bin_size = std::getenv("ROCKSDB_SHARDS_BIN_SIZE");
+    if (env_bin_size) bin_size = static_cast<uint64_t>(std::atoll(env_bin_size));
     StartShards(ratio, std::string(output_path), interval, num_bins, bin_size);
   }
 }
