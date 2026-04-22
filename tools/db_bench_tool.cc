@@ -3269,6 +3269,8 @@ class Benchmark {
                   entries_per_batch_);
         }
         method = &Benchmark::ReadRandom;
+      } else if (name == "readrandom_zipfian") {
+        method = &Benchmark::ReadRandomZipfian;
       } else if (name == "readrandom_phase_switch") {
         method = &Benchmark::ReadRandomPhaseSwitch;
       } else if (name == "readrandom_reverse_phase_switch") {
@@ -5450,6 +5452,57 @@ class Benchmark {
   // Runs entirely in one process so SHARDS observes both phases continuously.
   // The phase switch at the 50% mark is visible in MRC snapshots as the
   // histogram gradually forgets the uniform history and converges to Zipfian.
+  void ReadRandomZipfian(ThreadState* thread) {
+    int64_t read = 0;
+    int64_t found = 0;
+    int64_t bytes = 0;
+    ReadOptions options(FLAGS_verify_checksum, true);
+    std::unique_ptr<const char[]> key_guard;
+    Slice key = AllocateKey(&key_guard);
+    PinnableSlice pinnable_val;
+
+    ZipfianGenerator zipf(static_cast<uint64_t>(FLAGS_num), FLAGS_zipf_alpha);
+
+    for (int64_t i = 0; i < reads_; ++i) {
+      int64_t key_rand = static_cast<int64_t>(zipf.Next(&thread->rand));
+
+      DBWithColumnFamilies* db_with_cfh = SelectDBWithCfh(thread);
+      GenerateKeyFromInt(key_rand, FLAGS_num, &key);
+      read++;
+      pinnable_val.Reset();
+      Status s;
+      if (FLAGS_num_column_families > 1) {
+        s = db_with_cfh->db->Get(options, db_with_cfh->GetCfh(key_rand), key,
+                                 &pinnable_val);
+      } else {
+        s = db_with_cfh->db->Get(options,
+                                 db_with_cfh->db->DefaultColumnFamily(), key,
+                                 &pinnable_val);
+      }
+      if (s.ok()) {
+        found++;
+        bytes += key.size() + pinnable_val.size();
+      } else if (!s.IsNotFound()) {
+        fprintf(stderr, "Get returned an error: %s\n", s.ToString().c_str());
+        abort();
+      }
+
+      if (thread->shared->read_rate_limiter.get() != nullptr &&
+          read % 256 == 255) {
+        thread->shared->read_rate_limiter->Request(
+            256, Env::IO_HIGH, nullptr /* stats */, RateLimiter::OpType::kRead);
+      }
+
+      thread->stats.FinishedOps(db_with_cfh, db_with_cfh->db, 1, kRead);
+    }
+
+    char msg[100];
+    snprintf(msg, sizeof(msg), "(%" PRIu64 " of %" PRIu64 " found)\n",
+             found, read);
+    thread->stats.AddBytes(bytes);
+    thread->stats.AddMessage(msg);
+  }
+
   void ReadRandomPhaseSwitch(ThreadState* thread) {
     int64_t read = 0;
     int64_t found = 0;
