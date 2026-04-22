@@ -457,6 +457,8 @@ BlockCacheTracer::BlockCacheTracer() {
     if (env_num_bins) num_bins = static_cast<uint64_t>(std::atoll(env_num_bins));
     const char* env_bin_size = std::getenv("ROCKSDB_SHARDS_BIN_SIZE");
     if (env_bin_size) bin_size = static_cast<uint64_t>(std::atoll(env_bin_size));
+    const char* env_decay = std::getenv("ROCKSDB_SHARDS_DECAY");
+    if (env_decay) shards_decay_factor_ = std::atof(env_decay);
     StartShards(ratio, std::string(output_path), interval, num_bins, bin_size);
   }
 }
@@ -508,6 +510,9 @@ Status BlockCacheTracer::WriteBlockAccess(const BlockCacheTraceRecord& record,
           std::string snap_path = shards_output_path_ + "." +
                                   std::to_string(++shards_snapshot_count_);
           shards_->DumpMRC(snap_path);
+          if (shards_decay_factor_ < 1.0) {
+            shards_->Decay(shards_decay_factor_);
+          }
         }
       }
     }

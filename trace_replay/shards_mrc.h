@@ -46,6 +46,11 @@ class ShardsMRC {
   // Returns a JSON string of the raw histogram for logging.
   std::string GetHistogramJSON() const;
 
+  // Apply exponential decay to the histogram: multiply every bin by
+  // decay_factor. Call after each periodic snapshot to down-weight old
+  // observations so the MRC adapts to distribution shifts.
+  void Decay(double decay_factor);
+
   uint64_t num_entries_seen() const { return num_entries_seen_; }
   uint64_t num_entries_processed() const { return num_entries_processed_; }
 

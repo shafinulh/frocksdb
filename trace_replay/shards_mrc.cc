@@ -129,6 +129,12 @@ bool ShardsMRC::DumpMRC(const std::string& path) const {
   return true;
 }
 
+void ShardsMRC::Decay(double decay_factor) {
+  for (double& v : histogram_) {
+    v *= decay_factor;
+  }
+}
+
 std::string ShardsMRC::GetHistogramJSON() const {
   std::ostringstream oss;
   oss << "{\"sampling_ratio\":" << sampling_ratio_

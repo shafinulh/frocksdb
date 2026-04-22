@@ -319,6 +319,7 @@ class BlockCacheTracer {
   std::string shards_output_path_;
   uint64_t shards_dump_interval_{0};
   uint64_t shards_snapshot_count_{0};
+  double shards_decay_factor_{1.0};
 };
 
 }  // namespace ROCKSDB_NAMESPACE
