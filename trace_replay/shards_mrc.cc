@@ -110,6 +110,22 @@ bool ShardsMRC::DumpMRC(const std::string& path) const {
   }
 
   fclose(f);
+
+  // Write human-readable CSV alongside the binary.
+  std::string txt_path = path + ".txt";
+  FILE* tf = fopen(txt_path.c_str(), "w");
+  if (tf) {
+    fprintf(tf, "cache_size_bytes,miss_ratio\n");
+    double sfx = total;
+    for (uint64_t i = 0; i < num_bins_; ++i) {
+      fprintf(tf, "%llu,%.6f\n", (unsigned long long)(i * bin_size_),
+              sfx / total);
+      sfx -= histogram_[i];
+      if (sfx < 0.0) sfx = 0.0;
+    }
+    fclose(tf);
+  }
+
   return true;
 }
 
